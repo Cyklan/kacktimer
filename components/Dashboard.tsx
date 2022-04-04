@@ -1,4 +1,5 @@
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 import { FC } from "react";
 
 const Dashboard: FC = () => {
@@ -13,10 +14,12 @@ const Dashboard: FC = () => {
     <div className="flex flex-col items-center space-y-8 mt-10">
       <button className="btn btn-primary w-full">Logbuch</button>
       <button className="btn btn-primary w-full">Rangliste</button>
-      <button className="btn btn-primary w-full">Einstellungen</button>
+      <Link href="/settings">
+        <a className="btn btn-primary w-full">Einstellungen</a>
+      </Link>
       <button onClick={() => signOut()} className="btn btn-secondary w-full">Abmelden</button>
     </div>
   </div>;
-}
+};
 
 export default Dashboard;
