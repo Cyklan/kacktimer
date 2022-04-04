@@ -15,7 +15,7 @@ const Settings: NextPage = () => {
         <a className="btn btn-primary">Anzeigename ändern</a>
       </Link>
       <button onClick={() => {
-        signOut().then(() => router.push("/"))
+        signOut({redirect: false}).then(() => router.push("/"))
       }} className="btn btn-accent w-full">Abmelden</button>
     </div>
   </div>;
