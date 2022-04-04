@@ -17,7 +17,6 @@ const Dashboard: FC = () => {
       <Link href="/settings">
         <a className="btn btn-primary w-full">Einstellungen</a>
       </Link>
-      <button onClick={() => signOut()} className="btn btn-secondary w-full">Abmelden</button>
     </div>
   </div>;
 };
