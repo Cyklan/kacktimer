@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage } from "next";
+import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Dashboard from "../components/Dashboard";
 import Hero from "../components/Hero";

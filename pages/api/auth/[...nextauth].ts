@@ -11,7 +11,6 @@ export default NextAuth({
   ],
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      // TODO: Save user to database
       const db = new PrismaClient();
       const dbUser = await db.user.upsert({
         where: { email: user.email! },
@@ -21,12 +20,9 @@ export default NextAuth({
         },
         update: {}
       });
+      db.$disconnect();
 
-      if (dbUser.registered) {
-        return true;
-      }
-
-      return "/setusername";
+      return true;
     }
   }
 });
