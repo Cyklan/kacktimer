@@ -1,7 +1,8 @@
 import Head from 'next/head';
 import '../styles/globals.css';
+import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return <>
     <Head>
       <title>Kacktimer</title>
@@ -10,7 +11,9 @@ function MyApp({ Component, pageProps }) {
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="crossorigin" />
       <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     </Head>
-    <Component {...pageProps} />
+    <SessionProvider session={session}>
+      <Component {...pageProps} />
+    </SessionProvider>
   </>;
 }
 
