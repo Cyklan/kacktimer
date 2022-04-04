@@ -7,5 +7,11 @@ export default NextAuth({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!
     })
-  ]
-})
+  ],
+  callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      // TODO: Save user to database
+      return true;
+    }
+  }
+});
