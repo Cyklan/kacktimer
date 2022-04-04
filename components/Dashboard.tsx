@@ -1,3 +1,4 @@
+import { signOut } from "next-auth/react";
 import { FC } from "react";
 
 const Dashboard: FC = () => {
@@ -13,7 +14,7 @@ const Dashboard: FC = () => {
       <button className="btn btn-primary w-full">Logbuch</button>
       <button className="btn btn-primary w-full">Rangliste</button>
       <button className="btn btn-primary w-full">Einstellungen</button>
-
+      <button onClick={() => signOut()} className="btn btn-secondary w-full">Abmelden</button>
     </div>
   </div>;
 }

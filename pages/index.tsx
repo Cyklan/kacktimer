@@ -1,9 +1,9 @@
+import { GetServerSideProps, NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Dashboard from "../components/Dashboard";
 import Hero from "../components/Hero";
 
-
-export default function Home() {
+const Home: NextPage = () => {
 
   const session = useSession();
 
@@ -18,4 +18,6 @@ export default function Home() {
   return (
     <Dashboard />
   );
-}
+};
+
+export default Home;
