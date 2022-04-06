@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function useLocalStorage<T>(key: string, initialValue: T) {
+export default function useLocalStorage<T>(key: string, initialValue?: T) {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState<T>(() => {
@@ -14,7 +14,14 @@ export default function useLocalStorage<T>(key: string, initialValue: T) {
       // Parse stored json or if none return initialValue
       // return item ? JSON.parse(item) : initialValue;
       if (item) {
-        return JSON.parse(item);
+        const parsedItem: T = JSON.parse(item);
+        if (parsedItem !== null) {
+          return parsedItem;
+        }
+      }
+
+      if (!initialValue) {
+        return null;
       }
 
       window.localStorage.setItem(key, JSON.stringify(initialValue));
