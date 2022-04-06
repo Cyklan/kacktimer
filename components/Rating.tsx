@@ -18,7 +18,7 @@ const Rating: FC<RatingProps> = ({ value, setValue, readonly }) => {
             setValue(i)
           }
         }}
-        className={`flex justify-center items-center select-none text-3xl aspect-square w-12 ${readonly ? "cursor-default" : "cursor-pointer"} bg-orange-900 text-transparent bg-clip-text ${value >= i ? "opacity-100" : "opacity-30"}`}
+        className={`flex justify-center items-center select-none text-3xl aspect-square w-12 ${readonly ? "cursor-default" : "cursor-pointer"} ${value >= i ? "opacity-100" : "opacity-30"}`}
         key={`rating-star-${i}`}
       >
         💩
