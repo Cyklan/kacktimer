@@ -65,7 +65,7 @@ const Timer: NextPage = () => {
         </div>
         <div className="modal-action flex-col">
           <button
-            className="btn btn-primary w-full"
+            className="btn btn-accent w-full"
             onClick={() => {
               setStartTime(null);
               router.push("/");
@@ -73,7 +73,7 @@ const Timer: NextPage = () => {
           >
             Wirklich abbrechen
           </button>
-          <label htmlFor="cancel-modal" className="!ml-0 mt-4 btn btn-accent w-full">Doch nicht</label>
+          <label htmlFor="cancel-modal" className="!ml-0 mt-4 btn-primary btn w-full">Doch nicht</label>
         </div>
       </div>
     </div>
