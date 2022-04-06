@@ -1,22 +1,31 @@
+import cuid from "cuid";
 import dynamic from "next/dynamic";
-import { FC, useState } from "react";
+import { useRouter } from "next/router";
+import { FC, useContext, useState } from "react";
+import useLocalStorage from "../hooks/useLocalStorage";
+import Poop from "../model/Poop";
+import { OnlineContext } from "../pages/_app";
 import Rating from "./Rating";
 
 interface SavePoopProps {
   startTime: number;
   endTime: number;
+  reset: () => void;
 }
 
-const SavePoop: FC<SavePoopProps> = ({ startTime, endTime }) => {
+const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
 
   const [rating, setRating] = useState(2);
   const [consistency, setConsistency] = useState(50);
   const [goldenPoop, setGoldenPoop] = useState(false);
   const [withPoop, setWithPoop] = useState(true);
+  const [storedPoops, setStoredPoops] = useLocalStorage<Poop[]>("poops", []);
+  const online = useContext(OnlineContext);
+  const router = useRouter();
 
-  const timePassedMS = endTime - startTime;
-  const minutes = Math.floor(timePassedMS / 1000 / 60);
-  const seconds = Math.floor(timePassedMS / 1000 % 60);
+  const timeInMS = endTime - startTime;
+  const minutes = Math.floor(timeInMS / 1000 / 60);
+  const seconds = Math.floor(timeInMS / 1000 % 60);
 
   return (
     <div
@@ -61,15 +70,52 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime }) => {
             <span className="label-text">Goldener Schiss</span>
             <input type="checkbox" className="checkbox checkbox-secondary" checked={goldenPoop} onChange={() => {
               if (!goldenPoop) {
-                setWithPoop(true)
+                setWithPoop(true);
               }
-              setGoldenPoop(!goldenPoop)
+              setGoldenPoop(!goldenPoop);
             }} />
           </label>
         </div>
       </div>
       <div id="actions" className="flex justify-around w-full absolute bottom-8">
-        <button className="btn btn-primary w-4/6">Speichern</button>
+        <button onClick={() => {
+          const poop: Poop = {
+            id: cuid(),
+            consistency,
+            goldenPoop,
+            inDatabase: false,
+            rating,
+            withPoop,
+            timestamp: endTime,
+            timeInMS
+          };
+
+          if (online) {
+            fetch("/api/savePoop", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(poop)
+            }).then(res => {
+
+              if (res.status !== 200) {
+                throw new Error("Failed to save poop");
+              }
+              return res.json();
+            }).then(_ => {
+              poop.inDatabase = true;
+              setStoredPoops([...storedPoops, poop]);
+              router.push("/")
+              reset()
+            })
+              .catch(console.error);
+          } else {
+            setStoredPoops([...storedPoops, poop]);
+            router.push("/")
+            reset()
+          }
+        }} className="btn btn-primary w-4/6">Speichern</button>
       </div>
     </div>
   );

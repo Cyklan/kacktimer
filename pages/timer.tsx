@@ -25,7 +25,16 @@ const Timer: NextPage = () => {
   }, []);
 
   if (showResultScreen && endTime) {
-    return <SavePoop startTime={startTime} endTime={endTime} />;
+    return <SavePoop 
+      startTime={startTime} 
+      endTime={endTime} 
+      reset={() => {
+        setStartTime(null);
+        setEndTime(null);
+        setTimePassed(null);
+        setShowResultScreen(false);
+      }}
+    />;
   }
 
   return <>
