@@ -4,12 +4,15 @@ import { SessionProvider } from "next-auth/react";
 import { createContext, useContext, useEffect, useState } from 'react';
 import useOnline from '../hooks/useOnline';
 import { Toaster } from 'react-hot-toast';
+import useDataSync from '../hooks/useDataSync';
+import SyncContext from '../context/SyncContext';
 
 export const OnlineContext = createContext(false);
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 
   const [online, setOnline] = useState(typeof window !== "undefined" ? window.navigator.onLine : false);
+  const syncData = useDataSync();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -30,6 +33,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         setOnline(false);
       });
     };
+
   }, []);
 
   return <>
@@ -41,10 +45,12 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     </Head>
     <OnlineContext.Provider value={online}>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-        <Toaster />
-      </SessionProvider>
+      <SyncContext.Provider value={syncData}>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+          <Toaster />
+        </SessionProvider>
+      </SyncContext.Provider>
     </OnlineContext.Provider>
   </>;
 }
