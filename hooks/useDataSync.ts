@@ -51,14 +51,19 @@ export default function useDataSync() {
   }
 
   function toastedSync() {
-    toast.promise(syncData(), {
-      error: "Konnte Daten nicht synchronisieren",
-      loading: "Synchronisiere Daten...",
-      success: "Daten wurden synchronisiert"
-    });
+    if (typeof window !== "undefined" && window.navigator.onLine) {
+      toast.promise(syncData(), {
+        error: "Konnte Daten nicht synchronisieren",
+        loading: "Synchronisiere Daten...",
+        success: "Daten wurden synchronisiert"
+      });
+    }
   }
 
   useEffect(() => {
+    // register event listener for online and offline
+    window.addEventListener("online", toastedSync);
+
     // register scheduled task, every 10 minutes
     const interval = setInterval(() => toastedSync(), 10 * 60 * 1000);
 
