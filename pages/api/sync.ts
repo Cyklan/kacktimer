@@ -49,8 +49,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   });
 
+  const mappedPoops: Poop[] = allPoops.map(x => ({
+    consistency: x.consistency,
+    id: x.id,
+    goldenPoop: x.goldenPoop,
+    inDatabase: true,
+    rating: x.rating,
+    timeInMS: x.timeInMS,
+    withPoop: !x.withoutPoop,
+    timestamp: x.createdAt.getTime()
+  }))
 
-  res.status(200).json(allPoops);
+
+  res.status(200).json(mappedPoops);
 
   db.$disconnect();
 }
