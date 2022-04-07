@@ -3,6 +3,7 @@ import '../styles/globals.css';
 import { SessionProvider } from "next-auth/react";
 import { createContext, useContext, useEffect, useState } from 'react';
 import useOnline from '../hooks/useOnline';
+import { Toaster } from 'react-hot-toast';
 
 export const OnlineContext = createContext(false);
 
@@ -42,6 +43,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     <OnlineContext.Provider value={online}>
       <SessionProvider session={session}>
         <Component {...pageProps} />
+        <Toaster />
       </SessionProvider>
     </OnlineContext.Provider>
   </>;

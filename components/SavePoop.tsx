@@ -2,6 +2,7 @@ import cuid from "cuid";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { FC, useContext, useState } from "react";
+import toast from "react-hot-toast";
 import useLocalStorage from "../hooks/useLocalStorage";
 import LocalStorageKeys from "../model/LocalStorageKeys";
 import Poop from "../model/Poop";
@@ -21,6 +22,7 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
   const [goldenPoop, setGoldenPoop] = useState(false);
   const [withPoop, setWithPoop] = useState(true);
   const [storedPoops, setStoredPoops] = useLocalStorage<Poop[]>(LocalStorageKeys.poops, []);
+  const [saving, setSaving] = useState(false);
   const online = useContext(OnlineContext);
   const router = useRouter();
 
@@ -79,7 +81,9 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
         </div>
       </div>
       <div id="actions" className="flex justify-around w-full absolute bottom-8">
-        <button onClick={() => {
+        <button 
+          disabled={saving}
+          onClick={() => {
           const poop: Poop = {
             id: cuid(),
             consistency,
@@ -92,7 +96,8 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
           };
 
           if (online) {
-            fetch("/api/savePoop", {
+            setSaving(true);
+            toast.promise(fetch("/api/savePoop", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json"
@@ -109,11 +114,15 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
               setStoredPoops([...storedPoops, poop]);
               router.push("/")
               reset()
-            })
-              .catch(console.error);
+            }), {
+              "error": "Speichern fehlgeschlagen",
+              "success": "Speichern erfolgreich",
+              loading: "Speichern..."
+            }).then(() => setSaving(false))
           } else {
             setStoredPoops([...storedPoops, poop]);
             router.push("/")
+            toast.success("Speichern erfolgreich");
             reset()
           }
         }} className="btn btn-primary w-4/6">Speichern</button>
