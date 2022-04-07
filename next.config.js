@@ -5,6 +5,7 @@ const nextConfig = withPWA({
   reactStrictMode: true,
   pwa: {
     dest: "public",
+    skipWaiting: false
   }
 });
 

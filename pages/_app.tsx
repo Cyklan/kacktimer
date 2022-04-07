@@ -36,6 +36,27 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 
   }, []);
 
+  // check for pwa stuff
+  useEffect(() => {
+    if (typeof window === "undefined" || "serviceWorker" in navigator === false || (window as any).workbox === undefined) {
+      return;
+    }
+
+    const wb = (window as any).workbox
+    
+    wb.addEventListener("waiting", event => {
+      if (confirm("Es gibt ein Update für diese App. Möchten sie das Update installieren?")) {
+        wb.addEventListener("controlling", event => {
+          window.location.reload();
+        });
+
+        wb.messageSkipWaiting()
+      }
+    })
+
+    wb.register()
+  })
+
   return <>
     <Head>
       <title>Kacktimer</title>
