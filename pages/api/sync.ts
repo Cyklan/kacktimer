@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       rating: x.rating,
       timeInMS: x.timeInMS,
       id: x.id,
-      withoutPoop: x.withPoop
+      withoutPoop: !x.withPoop
     }))
   });
 
