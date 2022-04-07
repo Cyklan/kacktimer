@@ -28,7 +28,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   });
 
-
   await db.poop.create({
     data: {
       withoutPoop: !poop.withPoop,
