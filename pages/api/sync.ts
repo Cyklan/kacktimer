@@ -6,11 +6,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { SyncPayload } from "../../hooks/useDataSync";
 
-export interface SyncResponsePayload {
-  insertedPoops: string[];
-  cloudOnlyPoops: Poop[];
-}
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method?.toLowerCase() !== "post") {
@@ -48,32 +43,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }))
   });
 
-  const poopsOnClient = [...payload.localPoopsInDB, ...payload.localOnlyPoops.map(x => x.id)];
-
-  // find all poops that are not on the client
-  const cloudOnlyPoops = await db.poop.findMany({
+  const allPoops = await db.poop.findMany({
     where: {
-      id: {
-        notIn: poopsOnClient
-      }
+      userId: user.id
     }
-  })
+  });
 
-  const responsePayload: SyncResponsePayload = {
-    cloudOnlyPoops: cloudOnlyPoops.map(x => ({
-      consistency: x.consistency,
-      goldenPoop: x.goldenPoop,
-      rating: x.rating,
-      timeInMS: x.timeInMS,
-      id: x.id,
-      inDatabase: true,
-      timestamp: x.createdAt.getTime(),
-      withPoop: !x.withoutPoop,
-    })),
-    insertedPoops: payload.localOnlyPoops.map(x => x.id)
-  }
 
-  res.status(200).json(responsePayload);
+  res.status(200).json(allPoops);
 
   db.$disconnect();
 }

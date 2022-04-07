@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import LocalStorageKeys from "../model/LocalStorageKeys";
 import Poop from "../model/Poop";
-import { SyncResponsePayload } from "../pages/api/sync";
 import useLocalStorage from "./useLocalStorage";
 
 export interface SyncPayload {
@@ -35,17 +34,8 @@ export default function useDataSync() {
       body: JSON.stringify(payload)
     })
       .then(response => response.json())
-      .then((response: SyncResponsePayload) => {
-        const newPoops = response.cloudOnlyPoops;
-        const insertedPoopIds = response.insertedPoops;
-
-        const uploadedPoops: Poop[] = poops.filter(x => !x.inDatabase).map(x => ({
-          inDatabase: insertedPoopIds.includes(x.id),
-          ...x
-        }));
-
-        const localPoopsInDB = poops.filter(x => x.inDatabase);
-        setPoops([...uploadedPoops, ...newPoops, ...localPoopsInDB]);
+      .then((response: Poop[]) => {
+        setPoops(response);
       })
       .catch(error => console.error(error));
   }
