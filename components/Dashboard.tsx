@@ -2,11 +2,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
+import LocalStorageKeys from "../model/LocalStorageKeys";
 
 const Dashboard: FC = () => {
 
   const router = useRouter();
-  const [startTime] = useLocalStorage<Date>("startTime", null);
+  const [startTime] = useLocalStorage<Date>(LocalStorageKeys.startTime, null);
 
   if (startTime !== null) {
     router.push("/timer");
@@ -21,7 +22,9 @@ const Dashboard: FC = () => {
     </main>
 
     <div className="flex flex-col items-center space-y-8 mt-10">
-      <button className="btn btn-primary w-full">Logbuch</button>
+      <Link href="/logbook">
+        <a className="btn btn-primary w-full">Logbuch</a>
+      </Link>
       <button className="btn btn-primary w-full">Rangliste</button>
       <Link href="/settings">
         <a className="btn btn-primary w-full">Einstellungen</a>

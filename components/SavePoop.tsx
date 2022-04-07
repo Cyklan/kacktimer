@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { FC, useContext, useState } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
+import LocalStorageKeys from "../model/LocalStorageKeys";
 import Poop from "../model/Poop";
 import { OnlineContext } from "../pages/_app";
 import Rating from "./Rating";
@@ -19,7 +20,7 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
   const [consistency, setConsistency] = useState(50);
   const [goldenPoop, setGoldenPoop] = useState(false);
   const [withPoop, setWithPoop] = useState(true);
-  const [storedPoops, setStoredPoops] = useLocalStorage<Poop[]>("poops", []);
+  const [storedPoops, setStoredPoops] = useLocalStorage<Poop[]>(LocalStorageKeys.poops, []);
   const online = useContext(OnlineContext);
   const router = useRouter();
 
