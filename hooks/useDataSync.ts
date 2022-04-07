@@ -21,6 +21,8 @@ export default function useDataSync() {
       localOnlyPoops,
       localPoopsInDB: localPoopsInDB.map(x => x.id)
     };
+
+    return payload;
   }
 
   function syncData() {
@@ -42,7 +44,8 @@ export default function useDataSync() {
           ...x
         }));
 
-        setPoops([...uploadedPoops, ...newPoops]);
+        const localPoopsInDB = poops.filter(x => x.inDatabase);
+        setPoops([...uploadedPoops, ...newPoops, ...localPoopsInDB]);
       })
       .catch(error => console.error(error));
   }
