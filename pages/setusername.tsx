@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { MouseEventHandler, useState } from "react";
+import toast from "react-hot-toast";
 import BackButton from "../components/BackButton";
 
 interface SetUsernameProps {
@@ -10,13 +11,14 @@ interface SetUsernameProps {
 
 const SetUsername: NextPage<SetUsernameProps> = ({ name }) => {
   const [username, setUsername] = useState(name);
+  const [updating, setUpdating] = useState(false);
 
   function handleSubmit() {
     if (username.length === 0) {
       return;
     }
 
-    fetch("/api/changeName", {
+    return fetch("/api/changeName", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +33,14 @@ const SetUsername: NextPage<SetUsernameProps> = ({ name }) => {
     <BackButton to="/settings" />
     <div className="h-auto flex flex-col items-center justify-evenly space-y-8">
       <input autoFocus className="input w-full max-w-xs" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Benutzername" />
-      <button disabled={name === username} onClick={handleSubmit} className="btn btn-primary w-full">Speichern</button>
+      <button disabled={name === username || updating} onClick={() => {
+        setUpdating(true)
+        toast.promise(handleSubmit(), {
+          success: "Benutzername geändert",
+          error: "Benutzername konnte nicht geändert werden",
+          loading: "Benutzername wird geändert",
+        }).then(() => setUpdating(false));
+      }} className="btn btn-primary w-full">Speichern</button>
     </div>
   </div>;
 };
