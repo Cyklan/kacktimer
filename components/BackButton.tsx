@@ -8,7 +8,7 @@ interface BackButtonProps extends HTMLProps<HTMLAnchorElement> {
 
 const BackButton: FC<BackButtonProps> = ({ to, ...props }) => {
   return <Link href={to}>
-    <a {...props} className={"absolute top-10 left-10"}>
+    <a {...props} className={"fixed top-10 left-10"}>
       <ArrowLeft />
     </a>
   </Link>;

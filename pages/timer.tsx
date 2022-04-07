@@ -5,14 +5,15 @@ import TimerComponent from "../components/Timer";
 import { useRouter } from "next/router";
 import SavePoop from "../components/SavePoop";
 import dynamic from "next/dynamic";
+import LocalStorageKeys from "../model/LocalStorageKeys";
 
 const Timer: NextPage = () => {
 
   const router = useRouter();
-  const [startTime, setStartTime] = useLocalStorage("startTime", Date.now());
+  const [startTime, setStartTime] = useLocalStorage(LocalStorageKeys.startTime, Date.now());
   const [timePassed, setTimePassed] = useState(startTime === null ? 0 : Math.floor((Date.now() - startTime) / 1000)); // in seconds
-  const [endTime, setEndTime] = useLocalStorage<number>("endTime", null);
-  const [showResultScreen, setShowResultScreen] = useLocalStorage<boolean>("showResultScreen", false);
+  const [endTime, setEndTime] = useLocalStorage<number>(LocalStorageKeys.endTime, null);
+  const [showResultScreen, setShowResultScreen] = useLocalStorage<boolean>(LocalStorageKeys.showResultScreen, false);
 
   useEffect(() => {
     const interval = setInterval(() => {
