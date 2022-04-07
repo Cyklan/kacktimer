@@ -7,4 +7,4 @@ A PWA for tracking the time one wastes on the shitter.
 - Next.js
 - tailwindcss
 - daisyui
-- mysql <sub>soon</sub>
+- prisma with mysql
