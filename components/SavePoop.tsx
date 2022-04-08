@@ -79,6 +79,7 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
         <div>
           <input
             type="range"
+            disabled={!withPoop}
             min={0}
             max={100}
             step={25}
@@ -95,7 +96,10 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
         <div className="form-control w-full ">
           <label className="cursor-pointer label">
             <span className="label-text">{withPoop ? "Großes Geschäft" : "Nur Pinkeln"}</span>
-            <input type="checkbox" className="toggle toggle-secondary" checked={withPoop} onChange={() => setWithPoop(!withPoop)} />
+            <input type="checkbox" className="toggle toggle-secondary" checked={withPoop} onChange={() => {
+              setWithPoop(!withPoop)
+              setConsistency(0)
+            }} />
           </label>
         </div>
       </div>
@@ -114,7 +118,7 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
       </div>
       <div id="actions" className="flex justify-around w-full absolute bottom-8">
         <button
-          disabled={isNaN(seconds) || isNaN(minutes) || saving}
+          disabled={isNaN(seconds) || isNaN(minutes) || saving || timeInMS === 0}
           onClick={() => {
             const poop: Poop = {
               id: cuid(),
