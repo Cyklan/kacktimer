@@ -1,7 +1,8 @@
+import { time } from "console";
 import cuid from "cuid";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useLocalStorage from "../hooks/useLocalStorage";
 import LocalStorageKeys from "../model/LocalStorageKeys";
@@ -17,6 +18,10 @@ interface SavePoopProps {
 
 const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
 
+  const [timeEdited, setTimeEdited] = useState(false);
+  const [minutes, setMinutes] = useState(Math.floor((endTime - startTime) / 1000 / 60));
+  const [seconds, setSeconds] = useState(Math.floor((endTime - startTime) / 1000) % 60);
+  const [timeInMS, setTimeInMS] = useState(endTime - startTime);
   const [rating, setRating] = useState(2);
   const [consistency, setConsistency] = useState(50);
   const [goldenPoop, setGoldenPoop] = useState(false);
@@ -26,9 +31,9 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
   const online = useContext(OnlineContext);
   const router = useRouter();
 
-  const timeInMS = endTime - startTime;
-  const minutes = Math.floor(timeInMS / 1000 / 60);
-  const seconds = Math.floor(timeInMS / 1000 % 60);
+  useEffect(() => {
+    setTimeInMS(seconds * 1000 + minutes * 1000 * 60);
+  }, [minutes, seconds]);
 
   return (
     <div
@@ -36,7 +41,38 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
     >
       <div className="text-center flex flex-col items-center p-4 h-fit w-5/6 ">
         So lang hat dein Toilettengang gedauert:
-        <span className="text-4xl font-bold">{minutes.toString().padStart(2, "0")}:{seconds.toString().padStart(2, "0")}</span>
+        <div className="flex justify-center">
+          <input type="number" className="text-4xl text-right w-12 bg-base-200 active:border-blue-600 border-base-200 rounded-md" value={!timeEdited ? minutes.toString().padStart(2, "0") : minutes} onChange={(e) => {
+            if (e.target.value.match((/^[0-9]{0,2}$/))) {
+              setTimeEdited(true);
+              if (e.target.value === "") {
+                setMinutes(NaN);
+                return;
+              }
+              if (e.target.valueAsNumber > 59) {
+                setMinutes(59);
+                return;
+              }
+              setMinutes(parseInt(e.target.value));
+            }
+          }} />
+          <span className="text-4xl">:</span>
+          <input type="number" className="text-4xl w-12 bg-base-200 active:border-blue-600 border-base-200 rounded-md" value={!timeEdited ? seconds.toString().padStart(2, "0") : seconds} onChange={(e) => {
+            if (e.target.value.match((/^[0-9]{0,2}$/))) {
+              setTimeEdited(true);
+              if (e.target.value === "") {
+                setSeconds(NaN);
+                return;
+              }
+
+              if (e.target.valueAsNumber > 59) {
+                setSeconds(59);
+                return;
+              }
+              setSeconds(parseInt(e.target.value));
+            }
+          }} />
+        </div>
       </div>
       <div className="flex flex-col items-center p-4 h-fit space-y-6 w-5/6">
         <h3 className="text-2xl">Bewerte deinen Schiss:</h3>
@@ -81,51 +117,51 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
         </div>
       </div>
       <div id="actions" className="flex justify-around w-full absolute bottom-8">
-        <button 
-          disabled={saving}
+        <button
+          disabled={isNaN(seconds) || isNaN(minutes) || saving}
           onClick={() => {
-          const poop: Poop = {
-            id: cuid(),
-            consistency,
-            goldenPoop,
-            inDatabase: false,
-            rating,
-            withPoop,
-            timestamp: endTime,
-            timeInMS
-          };
+            const poop: Poop = {
+              id: cuid(),
+              consistency,
+              goldenPoop,
+              inDatabase: false,
+              rating,
+              withPoop,
+              timestamp: endTime,
+              timeInMS,
+            };
 
-          if (online) {
-            setSaving(true);
-            toast.promise(fetch("/api/savePoop", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(poop)
-            }).then(res => {
+            if (online) {
+              setSaving(true);
+              toast.promise(fetch("/api/savePoop", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify(poop)
+              }).then(res => {
 
-              if (res.status !== 200) {
-                throw new Error("Failed to save poop");
-              }
-              return res.json();
-            }).then(_ => {
-              poop.inDatabase = true;
+                if (res.status !== 200) {
+                  throw new Error("Failed to save poop");
+                }
+                return res.json();
+              }).then(_ => {
+                poop.inDatabase = true;
+                setStoredPoops([...storedPoops, poop]);
+                router.push("/");
+                reset();
+              }), {
+                "error": "Speichern fehlgeschlagen",
+                "success": "Speichern erfolgreich",
+                loading: "Speichern..."
+              }).then(() => setSaving(false));
+            } else {
               setStoredPoops([...storedPoops, poop]);
-              router.push("/")
-              reset()
-            }), {
-              "error": "Speichern fehlgeschlagen",
-              "success": "Speichern erfolgreich",
-              loading: "Speichern..."
-            }).then(() => setSaving(false))
-          } else {
-            setStoredPoops([...storedPoops, poop]);
-            router.push("/")
-            toast.success("Speichern erfolgreich");
-            reset()
-          }
-        }} className="btn btn-primary w-4/6">Speichern</button>
+              router.push("/");
+              toast.success("Speichern erfolgreich");
+              reset();
+            }
+          }} className="btn btn-primary w-4/6">Speichern</button>
       </div>
     </div>
   );
