@@ -25,7 +25,9 @@ const Dashboard: FC = () => {
       <Link href="/logbook">
         <a className="btn btn-primary w-full">Logbuch</a>
       </Link>
-      <button className="btn btn-primary w-full">Rangliste</button>
+      {/* <Link href="/leaderboard"> */}
+        <a className="btn btn-primary w-full">Rangliste</a>
+      {/* </Link> */}
       <Link href="/settings">
         <a className="btn btn-primary w-full">Einstellungen</a>
       </Link>

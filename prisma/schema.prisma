@@ -19,6 +19,8 @@ model User {
   updatedAt    DateTime       @updatedAt
   Poop         Poop[]
   Achievements Achievements[]
+
+  @@map("user")
 }
 
 model Poop {
@@ -32,6 +34,8 @@ model Poop {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   userId      String
+
+  @@map("poop")
 }
 
 model Achievements {
