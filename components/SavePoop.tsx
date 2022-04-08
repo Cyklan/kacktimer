@@ -41,23 +41,19 @@ const SavePoop: FC<SavePoopProps> = ({ startTime, endTime, reset }) => {
     >
       <div className="text-center flex flex-col items-center p-4 h-fit w-5/6 ">
         So lang hat dein Toilettengang gedauert:
-        <div className="flex justify-center">
-          <input type="number" className="text-4xl text-right w-12 bg-base-200 active:border-blue-600 border-base-200 rounded-md" value={!timeEdited ? minutes.toString().padStart(2, "0") : minutes} onChange={(e) => {
-            if (e.target.value.match((/^[0-9]{0,2}$/))) {
+        <div className="flex justify-center pt-2">
+          <input type="number" className={`text-4xl text-center w-12 bg-base-200 active:border-blue-600 border-base-200 rounded-md`} value={!timeEdited ? minutes.toString().padStart(2, "0") : minutes} onChange={(e) => {
+            if (e.target.value.match((/^[0-9]*$/))) {
               setTimeEdited(true);
               if (e.target.value === "") {
                 setMinutes(NaN);
-                return;
-              }
-              if (e.target.valueAsNumber > 59) {
-                setMinutes(59);
                 return;
               }
               setMinutes(parseInt(e.target.value));
             }
           }} />
           <span className="text-4xl">:</span>
-          <input type="number" className="text-4xl w-12 bg-base-200 active:border-blue-600 border-base-200 rounded-md" value={!timeEdited ? seconds.toString().padStart(2, "0") : seconds} onChange={(e) => {
+          <input type="number" className="text-4xl w-12 text-center bg-base-200 active:border-blue-600 border-base-200 rounded-md" value={!timeEdited ? seconds.toString().padStart(2, "0") : seconds} onChange={(e) => {
             if (e.target.value.match((/^[0-9]{0,2}$/))) {
               setTimeEdited(true);
               if (e.target.value === "") {
