@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       email: session.user.email!
     },
     data: {
-      name
+      name: name.substring(0, 20)
     }
   }).then(() => {
     res.status(200).json({ message: "name changed" });

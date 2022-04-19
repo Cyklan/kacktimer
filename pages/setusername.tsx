@@ -32,7 +32,7 @@ const SetUsername: NextPage<SetUsernameProps> = ({ name }) => {
   return <div className="w-screen h-screen flex flex-col items-center justify-center">
     <BackButton to="/settings" />
     <div className="h-auto flex flex-col items-center justify-evenly space-y-8">
-      <input autoFocus className="input w-full max-w-xs" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Benutzername" />
+      <input autoFocus className="input w-full max-w-xs" maxLength={20} value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Benutzername" />
       <button disabled={name === username || updating} onClick={() => {
         setUpdating(true)
         toast.promise(handleSubmit(), {
