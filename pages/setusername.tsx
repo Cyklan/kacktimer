@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { MouseEventHandler, useState } from "react";
 import toast from "react-hot-toast";
 import BackButton from "../components/BackButton";
@@ -12,6 +13,7 @@ interface SetUsernameProps {
 const SetUsername: NextPage<SetUsernameProps> = ({ name }) => {
   const [username, setUsername] = useState(name);
   const [updating, setUpdating] = useState(false);
+  const router = useRouter();
 
   function handleSubmit() {
     if (username.length === 0) {
@@ -39,7 +41,8 @@ const SetUsername: NextPage<SetUsernameProps> = ({ name }) => {
           success: "Benutzername geändert",
           error: "Benutzername konnte nicht geändert werden",
           loading: "Benutzername wird geändert",
-        }).then(() => setUpdating(false));
+        }).then(() => setUpdating(false))
+          .then(() => router.push("/"));
       }} className="btn btn-primary w-full">Speichern</button>
     </div>
   </div>;
