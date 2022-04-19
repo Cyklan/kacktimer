@@ -3,6 +3,7 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useRef } from "react";
+import toast from "react-hot-toast";
 import BackButton from "../components/BackButton";
 import SyncContext from "../context/SyncContext";
 import deleteLocalData from "../util/deleteLocalData";
@@ -36,6 +37,7 @@ const Settings: NextPage = () => {
           <button className="btn" onClick={() => {
             deleteLocalData();
             deleteModalToggle.current?.click();
+            toast.success("Lokale Daten gelöscht");
           }}>Löschen</button>
         </div>
       </div>
