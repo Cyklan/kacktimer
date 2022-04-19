@@ -38,10 +38,12 @@ const LeaderboardCard: FC<LeaderboardProps> = ({ name, place, time, highlight })
   </div>;
 };
 
-const formatHoursToReadable = (timeInH: number) => {
-  const hours = Math.floor(timeInH);
-  const minutes = Math.floor((timeInH - hours) * 60);
-  const seconds = Math.floor(((timeInH - hours) * 60 - minutes) * 60);
+const formatHoursToReadable = (timeInMS: number) => {
+
+  const hours = Math.floor(timeInMS / (1000 * 60 * 60));
+  const minutes = Math.floor((timeInMS % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeInMS % (1000 * 60)) / 1000);
+
   return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 }
 

@@ -6,17 +6,17 @@ import BackButton from "../components/BackButton";
 import LeaderboardCard from "../components/LeaderboardCard";
 
 interface LeaderboardProps {
-  topTimesInH: {
+  topTimesInMS: {
     name: string;
     time: number;
     userScore: boolean;
   }[];
-  ownTimeInH: number;
+  ownTimeInMS: number;
   lastDay: number;
   userInTop5: boolean;
 }
 
-const LeaderBoard: NextPage<LeaderboardProps> = ({ topTimesInH, ownTimeInH, lastDay, userInTop5 }) => {
+const LeaderBoard: NextPage<LeaderboardProps> = ({ topTimesInMS: topTimesInH, ownTimeInMS: ownTimeInH, lastDay, userInTop5 }) => {
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(lastDay));
 
@@ -107,7 +107,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     name: string;
     email: string;
   }[] = await db.$queryRawUnsafe(
-    `SELECT SUM(poop.timeInMS) / 1000 / 60 / 60 as time, user.name, user.email
+    `SELECT SUM(poop.timeInMS) as time, user.name, user.email
     FROM poop
     JOIN user ON user.id = poop.userId
     WHERE poop.createdAt BETWEEN '${firstDayString}' AND '${lastDayString}'
@@ -118,7 +118,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const userScore: {
     time: number;
-  }[] = await db.$queryRawUnsafe(`SELECT SUM(poop.timeInMS) / 1000 / 60 / 60 as time
+  }[] = await db.$queryRawUnsafe(`SELECT SUM(poop.timeInMS) as time
   FROM poop
   JOIN user
   ON user.id = poop.userId
@@ -126,12 +126,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      topTimesInH: top5.map(x => ({
+      topTimesInMS: top5.map(x => ({
         name: x.name,
         time: x.time,
         userScore: x.email.toLowerCase() === session.user.email.toLowerCase()
       })),
-      ownTimeInH: userScore[0].time,
+      ownTimeInMS: userScore[0].time,
       lastDay: lastDay.getTime(),
       userInTop5: top5.some(x => x.email.toLowerCase() === session.user.email.toLowerCase())
     }
