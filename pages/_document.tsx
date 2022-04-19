@@ -12,6 +12,7 @@ export default function Document() {
         <meta name='format-detection' content='telephone=no' />
         <meta name='mobile-web-app-capable' content='yes' />
         <meta name='theme-color' content='#FFFFFF' />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 
         <link rel='apple-touch-icon' href='/icons/touch-icon-iphone.png' />
         <link rel='apple-touch-icon' sizes='152x152' href='/icons/152.png' />
