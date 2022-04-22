@@ -13,7 +13,14 @@ const Dashboard: FC = () => {
     router.push("/timer");
   }
 
-  return <div className="flex flex-col items-center justify-evenly p-4 h-screen">
+  return <div className="flex flex-col items-center justify-evenly p-4 h-screen" onTouchStart={e => {
+    for (let i = 0; i < e.touches.length; i++) {
+      const touch = e.touches.item(i);
+      if (touch.pageX < 10 && touch.pageX > window.innerWidth - 10) {
+        e.preventDefault();
+      }
+    }
+  }}>
     <main onClick={() => {
       router.push("/timer");
     }} className="flex flex-col items-center justify-evenly px-4 select-none bg-base-200 aspect-square active:bg-base-300 rounded-xl flex-auto flex-grow-0">
